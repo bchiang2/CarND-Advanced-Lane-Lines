@@ -22,9 +22,11 @@ DST = np.float32([
     (1130, 525),
 ])
 
+M = cv2.getPerspectiveTransform(SRC, DST)
+M_INV = cv2.getPerspectiveTransform(DST, SRC)
 
 def get_top_down_view(image):
     undistorted_image = get_undistorted_image(image)
-    M = cv2.getPerspectiveTransform(SRC, DST)
     warped = cv2.warpPerspective(undistorted_image, M, image.shape[1::-1], flags=cv2.INTER_LINEAR)
     return warped
+
