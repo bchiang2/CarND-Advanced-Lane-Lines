@@ -36,11 +36,11 @@ def _get_calibration_points():
 
 
 obj_points, img_points = _get_calibration_points()
+ret, mtx, dist, rvecs, tvecs = cv2.calibrateCamera(obj_points, img_points, (1280, 720), None, None)
 
 
 def get_undistorted_image(image):
     gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
-    ret, mtx, dist, rvecs, tvecs = cv2.calibrateCamera(obj_points, img_points, gray.shape[::-1], None, None)
     undistorted_image = cv2.undistort(image, mtx, dist, None, mtx)
     return undistorted_image
 

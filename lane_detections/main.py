@@ -23,7 +23,7 @@ def get_line_edges(image):
 def detect_lanes(edges):
     ploty, leftx, rightx = get_sliding_windows(binary_warped=edges)
     left_curverad, right_curverad = get_curvature(ploty=ploty, leftx=leftx, rightx=rightx)
-    offset = get_offset(leftx=leftx[0], rightx=rightx[0], image_width=edges.shape[1])
+    offset = get_offset(leftx=leftx[-1], rightx=rightx[-1], image_width=edges.shape[1])
     return ploty, leftx, rightx, left_curverad, right_curverad, offset
 
 
