@@ -29,7 +29,7 @@ def detect_lanes(edges):
 
 def apply_lane_overlay(image):
     undist = get_undistorted_image(image=image)
-    top_down_view = get_rgb_top_down(image=undist)
+    top_down_view = get_rgb_top_down(image=image)
     line_edges = get_line_edges(image=top_down_view)
     ploty, leftx_base, rightx_base, left_curverad, right_curverad, offset = detect_lanes(edges=line_edges)
     ploty, leftx_base, rightx_base, left_curverad, right_curverad, offset = smooth(ploty, leftx_base, rightx_base, left_curverad, right_curverad, offset)
@@ -53,8 +53,8 @@ def test():
 
 
 def main():
-    white_output = '../challenge_video_out.mp4'
-    clip2 = VideoFileClip('../challenge_video.mp4')
+    white_output = '../project_video_out.mp4'
+    clip2 = VideoFileClip('../project_video.mp4')
     yellow_clip = clip2.fl_image(apply_lane_overlay)
     yellow_clip.write_videofile(white_output, audio=False)
 

@@ -22,8 +22,22 @@ def overly_lanes(undist, ploty, left_fitx, right_fitx, avg_curverad, offset):
     # Combine the result with the original image
     result = cv2.addWeighted(undist, 1, newwarp, 0.3, 0)
 
-    cv2.putText(result, 'Radius of Curvature = ' + str(round((avg_curverad / 1000), 2)) + 'km', (50, 50),
-                cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 255), 3)
-    cv2.putText(result, 'Vehicle Offset from Center = ' + str(round(offset, 2)) + 'm', (50, 100),
-                cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 255), 3)
+    cv2.putText(
+        result,
+        'Radius of Curvature: {} km'.format(round((avg_curverad / 1000), 2)),
+        (50, 50),
+        cv2.FONT_HERSHEY_SIMPLEX,
+        1,
+        (255, 255, 255),
+        3
+    )
+    cv2.putText(
+        result,
+        'Vehicle Offset from Center: {} m'.format(round(offset, 2)),
+        (50, 100),
+        cv2.FONT_HERSHEY_SIMPLEX,
+        1,
+        (255, 255, 255),
+        3
+    )
     return result
