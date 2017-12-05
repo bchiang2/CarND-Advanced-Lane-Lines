@@ -1,7 +1,5 @@
-import numpy as np
 import cv2
-
-from image_processing.calibration import get_undistorted_image
+import numpy as np
 
 BOTTOM_LEFT = (265, 700)
 BOTTOM_RIGHT = (1130, 700)
@@ -25,8 +23,12 @@ DST = np.float32([
 M = cv2.getPerspectiveTransform(SRC, DST)
 M_INV = cv2.getPerspectiveTransform(DST, SRC)
 
-def get_top_down_view(image):
+def first_person_to_birds_eye_view(image):
     undistorted_image = image
     warped = cv2.warpPerspective(undistorted_image, M, image.shape[1::-1], flags=cv2.INTER_LINEAR)
     return warped
 
+
+def birds_eye_to_first_person_view(image):
+    newwarp = cv2.warpPerspective(image, M_INV, (image.shape[1], image.shape[0]))
+    return newwarp

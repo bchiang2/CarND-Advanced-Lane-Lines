@@ -40,11 +40,5 @@ ret, mtx, dist, rvecs, tvecs = cv2.calibrateCamera(obj_points, img_points, (1280
 
 
 def get_undistorted_image(image):
-    gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
     undistorted_image = cv2.undistort(image, mtx, dist, None, mtx)
     return undistorted_image
-
-# img = plt.imread('../camera_cal/calibration2.jpg')
-#
-# undistorted = get_undistorted_image(img)
-# plt.show(undistorted)
