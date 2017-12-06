@@ -2,7 +2,8 @@ import numpy as np
 import cv2
 
 
-def get_edges(image, threshold=100):
+def get_edges(image, threshold=220):
+    image = cv2.cvtColor(image, cv2.COLOR_RGB2GRAY)
     sobel = cv2.Sobel(image, cv2.CV_64F, 1, 0)
     scaled_sobel = np.uint8(255 * sobel / np.max(sobel))
 
@@ -11,4 +12,3 @@ def get_edges(image, threshold=100):
     sxbinary = np.zeros_like(scaled_sobel)
     sxbinary[(scaled_sobel >= thresh_min) & (scaled_sobel <= thresh_max)] = 1
     return sxbinary
-

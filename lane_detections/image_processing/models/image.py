@@ -1,9 +1,19 @@
-from lane_detections.image_processing.helpers.calibration import get_undistorted_image
-from lane_detections.image_processing.helpers.perspective_transform import first_person_to_birds_eye_view, \
+from lane_detections.image_processing.utils.calibration import get_undistorted_image
+from lane_detections.image_processing.utils.perspective_transform import first_person_to_birds_eye_view, \
     birds_eye_to_first_person_view
-from lane_detections.image_processing.helpers.color_space import get_white_binary, get_yellow_binary
+from lane_detections.image_processing.utils.color_space import get_lane_color
+from lane_detections.image_processing.utils.edge_detection import get_edges
 import matplotlib.pyplot as plt
 
+class CameraView(object):
+    def __index__(self, image):
+        self.image = image
+
+    def front(self):
+        return birds_eye_to_first_person_view(self.image)
+
+    def birds_eye(self):
+        return first_person_to_birds_eye_view(self.image)
 
 class Image(object):
     @classmethod
@@ -29,8 +39,8 @@ class Image(object):
         plt.imshow(self.get_image(birds_eye=birds_eye))
         plt.show()
 
-    def get_white_binary(self, birds_eye=False):
-        return get_white_binary(self.get_image(birds_eye=birds_eye))
+    def get_lane_binary(self, birds_eye=False):
+        return get_lane_color(self.get_image(birds_eye=birds_eye))
 
-    def get_yellow_binary(self, birds_eye=False):
-        return get_yellow_binary(self.get_image(birds_eye=birds_eye))
+    def get_edges(self, birds_eye=False):
+        return get_edges(self.get_image(birds_eye=birds_eye))

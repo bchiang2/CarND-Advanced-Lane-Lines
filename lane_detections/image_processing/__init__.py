@@ -1,1 +1,1 @@
-from image_processing.helpers.calibration import get_undistorted_image
+from image_processing.utils.calibration import get_undistorted_image
