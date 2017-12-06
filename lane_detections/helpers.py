@@ -18,14 +18,13 @@ def plot_image(image):
     plt.show()
 
 
-def over_lay_binary_to_rgb(rgb, binary):
-    warp_zero = np.zeros_like(binary)
-    color_warp = np.dstack((warp_zero, np.dot(binary, 255), warp_zero))
+def over_lay_binary_to_rgb(rgb, binary, alpha=1, beta=1, weights=(200, 0, 0)):
+    src2 = np.dstack((np.dot(binary, weights[0]), np.dot(binary, weights[1]), np.dot(binary, weights[2])))
     return cv2.addWeighted(
         src1=rgb,
-        alpha=1,
-        src2=color_warp.astype(np.uint8),
-        beta=0.5,
+        alpha=alpha,
+        src2=src2,
+        beta=beta,
         gamma=0,
         dtype=8
     )

@@ -6,7 +6,7 @@ from lane_detections.image_processing.utils.edge_detection import get_edges
 import matplotlib.pyplot as plt
 
 class CameraView(object):
-    def __index__(self, image):
+    def __init__(self, image):
         self.image = image
 
     def front(self):
@@ -14,6 +14,7 @@ class CameraView(object):
 
     def birds_eye(self):
         return first_person_to_birds_eye_view(self.image)
+
 
 class Image(object):
     @classmethod

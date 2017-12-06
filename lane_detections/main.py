@@ -3,7 +3,7 @@ import cv2
 import matplotlib.pyplot as plt
 from moviepy.editor import VideoFileClip
 import helpers
-from lane_detections.image_processing.models.image import Image
+from lane_detections.image_processing.models.image import Image, CameraView
 from lane_detections.image_processing.models.video import Video
 
 
@@ -14,9 +14,10 @@ def test():
 
 def process_image(image):
     img = Image(image)
+    lane_binary = CameraView(img.get_lane_binary(birds_eye=True)).front()
     return helpers.over_lay_binary_to_rgb(
         rgb=img.get_image(birds_eye=False),
-        binary=img.get_lane_binary(birds_eye=True)
+        binary=lane_binary
     )
 
 
