@@ -6,13 +6,6 @@ ym_per_pix = 30 / 720  # meters per pixel in y dimension
 xm_per_pix = 3.7 / 700  # meters per pixel in x dimension
 
 
-def get_starting_point(binary_warped):
-    histogram = np.sum(binary_warped[int(binary_warped.shape[0] / 2):, :], axis=0)
-    midpoint = np.int(histogram.shape[0] / 2)
-    leftx_base = np.argmax(histogram[:midpoint])
-    rightx_base = np.argmax(histogram[midpoint:]) + midpoint
-    return leftx_base, rightx_base
-
 
 def get_sliding_windows(binary_warped):
     histogram = np.sum(binary_warped[int(binary_warped.shape[0] / 2):, :], axis=0)

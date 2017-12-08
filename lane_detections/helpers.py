@@ -31,3 +31,18 @@ def over_lay_image_to_rgb(rgb, image, alpha=1, beta=1, weights=(200, 0, 0)):
         gamma=0,
         dtype=8
     )
+
+
+def place_texts(image, texts):
+    offset = 50
+    for text in texts:
+        cv2.putText(
+            image,
+            text,
+            (50, offset),
+            cv2.FONT_HERSHEY_SIMPLEX,
+            1,
+            (255, 255, 255),
+            3
+        )
+        offset += 50

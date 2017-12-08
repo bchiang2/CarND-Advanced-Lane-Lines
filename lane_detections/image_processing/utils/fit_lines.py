@@ -1,8 +1,7 @@
 import numpy as np
 import cv2
 import matplotlib.pyplot as plt
-
-
+from lane_detections.image_processing.models.lanes_polynomial import LanePolynomial
 
 def fit_lines(binary_warped):
     # Assuming you have created a warped binary image called "binary_warped"
@@ -17,7 +16,7 @@ def fit_lines(binary_warped):
     rightx_base = np.argmax(histogram[midpoint:]) + midpoint
 
     # Choose the number of sliding windows
-    nwindows = 9
+    nwindows = 15
     # Set height of windows
     window_height = np.int(binary_warped.shape[0] / nwindows)
     # Identify the x and y positions of all nonzero pixels in the image
@@ -28,9 +27,9 @@ def fit_lines(binary_warped):
     leftx_current = leftx_base
     rightx_current = rightx_base
     # Set the width of the windows +/- margin
-    margin = 200
+    margin = 100
     # Set minimum number of pixels found to recenter window
-    minpix = 100
+    minpix = 25
     # Create empty lists to receive left and right lane pixel indices
     left_lane_inds = []
     right_lane_inds = []
@@ -81,10 +80,8 @@ def fit_lines(binary_warped):
     left_fitx = left_fit[0] * ploty ** 2 + left_fit[1] * ploty + left_fit[2]
     right_fitx = right_fit[0] * ploty ** 2 + right_fit[1] * ploty + right_fit[2]
 
-    # out_img[nonzeroy[left_lane_inds], nonzerox[left_lane_inds]] = [255, 0, 0]
-    # out_img[nonzeroy[right_lane_inds], nonzerox[right_lane_inds]] = [0, 0, 255]
+    return left_fitx, right_fitx, ploty
 
-    return left_fitx, right_fitx, ploty, out_img
 
 def search_near_by(binary_warped, left_fit, right_fit):
     # Assume you now have a new warped binary image
@@ -93,9 +90,6 @@ def search_near_by(binary_warped, left_fit, right_fit):
     nonzero = binary_warped.nonzero()
     nonzeroy = np.array(nonzero[0])
     nonzerox = np.array(nonzero[1])
-
-    out_img = np.dstack((binary_warped, binary_warped, binary_warped)) * 255
-
     margin = 100
     left_lane_inds = ((nonzerox > (left_fit[0] * (nonzeroy ** 2) + left_fit[1] * nonzeroy +
                                    left_fit[2] - margin)) & (nonzerox < (left_fit[0] * (nonzeroy ** 2) +
@@ -119,21 +113,20 @@ def search_near_by(binary_warped, left_fit, right_fit):
     ploty = np.linspace(0, binary_warped.shape[0] - 1, binary_warped.shape[0])
     left_fitx = left_fit[0] * ploty ** 2 + left_fit[1] * ploty + left_fit[2]
     right_fitx = right_fit[0] * ploty ** 2 + right_fit[1] * ploty + right_fit[2]
+    return left_fitx, right_fitx, ploty
 
-    # out_img[nonzeroy[left_lane_inds], nonzerox[left_lane_inds]] = [255, 0, 0]
-    # out_img[nonzeroy[right_lane_inds], nonzerox[right_lane_inds]] = [0, 0, 255]
 
-    return left_fitx, right_fitx, ploty, out_img
+LEFT_FIT, RIGHT_FIT = None, None
 
 
 def get_road(binary_warped):
-    # if LEFT_FIT and RIGHT_FIT:
-    #     left_fitx, right_fitx, ploty = search_near_by(binary_warped, left_fit=LEFT_FIT, right_fit=RIGHT_FIT)
-    # else:
-    left_fitx, right_fitx, ploty, color_warp = fit_lines(binary_warped)
+    if LEFT_FIT and RIGHT_FIT:
+        left_fitx, right_fitx, ploty = search_near_by(binary_warped, left_fit=LEFT_FIT, right_fit=RIGHT_FIT)
+    else:
+        left_fitx, right_fitx, ploty = fit_lines(binary_warped)
     # Create an image to draw the lines on
-    # warp_zero = np.zeros_like(binary_warped).astype(np.uint8)
-    # color_warp = np.dstack((warp_zero, warp_zero, warp_zero))
+    warp_zero = np.zeros_like(binary_warped).astype(np.uint8)
+    color_warp = np.dstack((warp_zero, warp_zero, warp_zero))
 
     # Recast the x and y points into usable format for cv2.fillPoly()
     pts_left = np.array([np.transpose(np.vstack([left_fitx, ploty]))])
@@ -141,4 +134,4 @@ def get_road(binary_warped):
     pts = np.hstack((pts_left, pts_right))
 
     # Draw the lane onto the warped blank image
-    return cv2.fillPoly(color_warp, np.int_([pts]), (0, 255, 0))
+    return cv2.fillPoly(color_warp, np.int_([pts]), (0, 255, 0)), LanePolynomial(ploty=ploty, leftx=left_fitx, rightx=right_fitx)
