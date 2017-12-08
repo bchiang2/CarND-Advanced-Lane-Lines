@@ -1,4 +1,6 @@
 import cv2
+from moviepy.editor import VideoFileClip
+
 
 class Video(object):
     def __init__(self, video_path):
@@ -9,8 +11,8 @@ class Video(object):
         frame_count = 0
         while (cap.isOpened()):
             ret, frame = cap.read()
-            frame_count+=1
-            if frame_count%2 == 0:
+            frame_count += 1
+            if frame_count % 2 == 0:
                 rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
                 processed_frame = image_function(rgb)
                 cv2.imshow('frame', cv2.cvtColor(processed_frame, cv2.COLOR_RGB2BGR))
@@ -21,3 +23,7 @@ class Video(object):
         cv2.destroyAllWindows()
 
 
+    def write_video(self, image_function, input=r'../project_video.mp4', output=r'../project_video_out.mp4'):
+        clip = VideoFileClip(input)
+        new_clip = clip.fl_image(image_function)
+        new_clip.write_videofile(output, audio=False)

@@ -15,7 +15,6 @@ def test():
 def process_image(image):
     img = Image(image)
     binary_color_lane = img.get_lane_binary(birds_eye=True)
-
     rgb_road_overlay, lanes_polynomial = get_road(binary_color_lane)
 
     front_view_with_road = cv2.addWeighted(
@@ -38,7 +37,7 @@ def process_image(image):
 
 def main():
     video = Video('../project_video.mp4')
-    video.play_video(process_image)
+    video.play_video(image_function=process_image)
 
 
 if __name__ == "__main__":

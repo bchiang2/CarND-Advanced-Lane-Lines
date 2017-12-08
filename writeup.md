@@ -39,14 +39,14 @@ You're reading it!
 #### 1. Briefly state how you computed the camera matrix and distortion coefficients. Provide an example of a distortion corrected calibration image.
 
 The code for this step is contained in the first code cell of the IPython notebook located in 
-`lane_detections/image_processing/calibration.py` 
+`lane_detections/image_processing/utils/calibration.py`
 
 I start by preparing "object points", which will be the (x, y, z) coordinates of the chessboard corners in the world. 
 Here I am assuming the chessboard is fixed on the (x, y) plane at z=0, such that the object points are the same for each calibration image.  
 Thus, `objp` is just a replicated array of coordinates, and `objpoints` will be appended with a copy of it every time I successfully detect all chessboard corners in a test image.  `imgpoints` will be appended with the (x, y) pixel position of each of the corners in the image plane with each successful chessboard detection.  
 
-I then used the output `objpoints` and `imgpoints` to compute the camera calibration and distortion coefficients using the `cv2.calibrateCamera()` function.  
-I applied this distortion correction to the test image using the `cv2.undistort()` function and obtained this result: 
+I then used the output `objpoints` and `imgpoints` to compute the camera calibration and distortion coefficients using the `cv2.calibrateCamera` function.  
+I applied this distortion correction to the test image using the `cv2.undistort` function and obtained this result: 
 
 ![alt text][image1a]
 ![alt text][image1b]
@@ -60,25 +60,25 @@ To demonstrate this step, I will describe how I apply the distortion correction 
 
 #### 2. Describe how (and identify where in your code) you used color transforms, gradients or other methods to create a thresholded binary image.  Provide an example of a binary image result.
 
-I used a combination of color and gradient thresholds to generate a binary image.
-The code can be found in `lane_detections/image_processing/color_space.py` and `lane_detections/image_processing/edge_detection.py`
+I used of color thresholds to generate a binary image.
+The code can be found in `lane_detections/image_processing/utils/color_space.py` 
+
 Here's an example of my output for this step. 
 
 ![alt text][image3]
 
 #### 3. Describe how (and identify where in your code) you performed a perspective transform and provide an example of a transformed image.
 
-The code for my perspective transform includes a function called `get_top_down_view()`, which appears in `lane_detections/image_processing/perspective_transform.py`
- (output_images/examples/example.py)
+The code for my perspective transform includes a function called `first_person_to_birds_eye_view`, which appears in `lane_detections/image_processing/utils/perspective_transform.py`
 
 This resulted in the following source and destination points:
 
 | Source        | Destination   | 
 |:-------------:|:-------------:| 
-| 265, 700      | 265, 700        | 
-| 1130, 700      | 1130, 700      |
-| 510, 525     | 265, 525      |
-| 845, 525      | 1130, 525        |
+| 265, 690      | 315, 690        | 
+| 1050, 690      | 900, 690      |
+| 555, 480     | 315, 480      |
+| 730, 480      | 900, 480        |
 
 I verified that my perspective transform was working as expected by drawing the `src` and `dst` points onto a test image and its warped counterpart to verify that the lines appear parallel in the warped image.
 
@@ -91,16 +91,18 @@ I fitted my lane lines with a 2nd order polynomial kinda like this:
 
 ![alt text][image5]
 
-Using the code provided in the lecture, the implementation can be found in `line_filter.py` 
+Using the code provided in the lecture, the implementation can be found in `fit_lines.py` 
 
 #### 5. Describe how (and identify where in your code) you calculated the radius of curvature of the lane and the position of the vehicle with respect to center.
 
-I did this in the `get_curvature` and `get_offset` in `line_filter.py`
+I did this in the `curvature` and `offset` methods in `LanePolynomial` class located in `lanes_polynomial.py`
+
 The curvature is extracted from the polynomial fit, and the offset is extracted from the camera position and the lane positioning.
 
 #### 6. Provide an example image of your result plotted back down onto the road such that the lane area is identified clearly.
 
-I implemented this step in `overlay.py` in the method `overly_lanes`.  
+I implemented this step in `main.py` in the method `process_image`.  
+
 Here is an example of my result on a test image:
 
 ![alt text][image6]
@@ -120,8 +122,7 @@ Here's a [link to my video result](./project_video_out.mp4)
 #### 1. Briefly discuss any problems / issues you faced in your implementation of this project.  Where will your pipeline likely fail?  What could you do to make it more robust?
 
 The main problem I faced with reliably detecting the lane in the video without jitter.
-To solve this I tried to stabilize the lane detection be smoothing the output.
-I did this by making sure the width between the left and right lane are constant throughout the lanes.
+To solve this by trying out different color space to get the best lane marking detection.
 
 If the width between two lane are different significantly. i.e. at least on of the lane is incorrect. I will reuse the last good detection.
 
