@@ -15,7 +15,6 @@ class CameraView(object):
     def birds_eye(self):
         return first_person_to_birds_eye_view(self.image)
 
-
 class Image(object):
     @classmethod
     def from_image_path(cls, image_path):

@@ -3,7 +3,6 @@ import cv2
 
 
 def get_edges(image, threshold=220):
-    image = cv2.cvtColor(image, cv2.COLOR_RGB2GRAY)
     sobel = cv2.Sobel(image, cv2.CV_64F, 1, 0)
     scaled_sobel = np.uint8(255 * sobel / np.max(sobel))
 

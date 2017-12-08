@@ -1,10 +1,10 @@
 import cv2
 import numpy as np
 
-BOTTOM_LEFT = (265, 700)
-BOTTOM_RIGHT = (1130, 700)
-TOP_LEFT = (510, 525)
-TOP_RIGHT = (845, 525)
+BOTTOM_LEFT = (256, 690)
+BOTTOM_RIGHT = (1050, 690)
+TOP_LEFT = (555, 480)
+TOP_RIGHT = (730, TOP_LEFT[1])
 
 SRC = np.float32([
     BOTTOM_LEFT,
@@ -14,10 +14,10 @@ SRC = np.float32([
 ])
 
 DST = np.float32([
-    BOTTOM_LEFT,
-    BOTTOM_RIGHT,
-    (265, 525),
-    (1130, 525),
+    (BOTTOM_LEFT[0]+100, BOTTOM_LEFT[1]),
+    (BOTTOM_RIGHT[0]-100, BOTTOM_RIGHT[1]),
+    (BOTTOM_LEFT[0]+100, TOP_LEFT[1]),
+    (BOTTOM_RIGHT[0]-100, TOP_LEFT[1]),
 ])
 
 M = cv2.getPerspectiveTransform(SRC, DST)

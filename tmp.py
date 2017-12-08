@@ -2,10 +2,6 @@ import cv2
 import numpy as np
 import glob
 import matplotlib.pyplot as plt
-import pickle
-import os
-
-PICKLED_FILE_PATH = r"calibration.pickle"
 
 # prepare object points
 NX = 9
@@ -29,7 +25,7 @@ def _get_image_corners(image):
 def _get_calibration_points():
     images_points = []
     objects_points = []
-    image_paths = glob.glob(r'../camera_cal/*.jpg')
+    image_paths = glob.glob(r'./camera_cal/*.jpg')
     for image_path in image_paths:
         image = plt.imread(image_path)
         corners = _get_image_corners(image=image)
@@ -39,27 +35,17 @@ def _get_calibration_points():
     return objects_points, images_points
 
 
-if os.path.exists(PICKLED_FILE_PATH):
-    print('Using pickled file')
-    with open(PICKLED_FILE_PATH, 'rb') as f:
-        data_set = pickle.load(f)
-else:
-    print('Making pickled file')
-    obj_points, img_points = _get_calibration_points()
-    ret, mtx, dist, rvecs, tvecs = cv2.calibrateCamera(obj_points, img_points, (1280, 720), None, None)
-    data_set = {
-        'obj_points': obj_points,
-        'img_points': img_points,
-        'ret': ret,
-        'mtx': mtx,
-        'dist': dist,
-        'rvecs': rvecs,
-        'tvecs': tvecs,
-    }
-    with open(PICKLED_FILE_PATH, 'wb') as f:
-        pickle.dump(data_set, f, pickle.HIGHEST_PROTOCOL)
+obj_points, img_points = _get_calibration_points()
 
 
 def get_undistorted_image(image):
-    undistorted_image = cv2.undistort(image, data_set['mtx'], data_set['dist'], None, data_set['mtx'])
+    gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+    ret, mtx, dist, rvecs, tvecs = cv2.calibrateCamera(obj_points, img_points, gray.shape[::-1], None, None)
+    undistorted_image = cv2.undistort(image, mtx, dist, None, mtx)
     return undistorted_image
+
+img = plt.imread('./test_images/straight_lines1.jpg')
+
+undistorted = get_undistorted_image(img)
+plt.imshow(undistorted)
+plt.show()
