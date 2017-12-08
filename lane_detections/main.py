@@ -37,7 +37,7 @@ def process_image(image):
 
 def main():
     video = Video('../project_video.mp4')
-    video.play_video(image_function=process_image)
+    video.write_video(image_function=process_image)
 
 
 if __name__ == "__main__":
